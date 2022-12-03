@@ -1,0 +1,60 @@
+---
+title: "HW 5"
+output: html_document
+date: "2022-11-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1
+```{r}
+library(parallel)
+alphabet <- function() {
+  letters <- c("a", "b", "c", "d", "e", "f", "g",
+               "h", "i", "j", "k", "l", "m", "n",
+               "o", "p", "q", "r", "s", "t", "u",
+               "v", "w", "x", "y", "z")
+  return(sample(letters,1))
+}
+alphabet()
+```
+
+# Question 2
+```{r}
+library(foreach)
+library(doParallel)
+start <- Sys.time()
+
+q2.a <- replicate(100000,alphabet())
+
+end <- Sys.time()
+
+a.time <- end - start
+detectCores()
+
+no_cores <- detectCores() - 1
+start <- Sys.time()
+
+cl <- makeCluster(no_cores)
+registerDoParallel(cl)
+
+foreach(x = 1:100000, .combine = c) %dopar% {
+    letters <- c("a", "b", "c", "d", "e", "f", "g",
+               "h", "i", "j", "k", "l", "m", "n",
+               "o", "p", "q", "r", "s", "t", "u",
+               "v", "w", "x", "y", "z")
+  return(sample(letters,1))
+}
+end <- Sys.time()
+
+b.time <- end - start
+
+stopCluster(cl)
+
+a.time
+b.time
+```
+
+
